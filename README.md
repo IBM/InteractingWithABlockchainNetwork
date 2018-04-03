@@ -1,4 +1,30 @@
+# Using Rest APIs to Interact with a Blockchain Network
+
 ## Instructions for setting the blockchainNetwork
+
+Welcome to Part 2 of building a Blockchain Application.  Now that you have created a blockchain network, you can learn how to interact with it using Rest APIs.
+
+## Included Components
+* Hyperledger Fabric
+* Docker
+* Hyperledger Fabric SDK for node.js
+
+
+## Application Workflow Diagram
+![Application Workflow](images/Pattern1-Build-a-network.png)
+
+## Prerequisites
+* [Docker](https://www.docker.com/products/overview) - v1.13 or higher
+* [Docker Compose](https://docs.docker.com/compose/overview/) - v1.8 or higher
+
+## Steps
+1. [Run Build.sh Script to build network](#1-run-the-build.sh-script)
+2. [Start the Network](#2-start-the-network)
+3. [Check the logs to see the results](#3-check-the-logs)
+4. [Use REST APIs to interact with the network](#4-use-rest-apis-to-interact-with-the-network)
+
+
+## 1. Run the Build.sh Script
 
 ### Open a new terminal and run the following command:
 ```bash
@@ -14,26 +40,20 @@ chmod +x clean.sh
 ./build.sh
 ```
 
-### Add compactions for CouchDB instances
+## 2. Start the Network
 
-In browser, open the web UI for all the couchdb instances and add the compaction rule.
-
-For eg:
-* Open  ```http://<IPAddress>:<Port>/_utils```
-* Now select the Configuration tab and click on the `Add Option` button.
-* Provide the following values for the input fields:
-```
-Selection: compactions
-Option: _default
-Value: [{db_fragmentation, "30%"}, {view_fragmentation, "30%"}]
-```
-* Now using terminal, do the following curl request for all the DB's:
-Format :
-```
-curl -H "Content-Type: application/json" -X POST http://<IPAddress>:<Port>/<DBName>/_compact
+Make sure the 'LOCALCONFIG' environment variable is unset if you are re-running this step after running the test below
+```bash
+unset LOCALCONFIG  
 ```
 
-###  Check the logs
+There 2 options to install chaincode on the peer nodes and start the Blockchain network. You can select any one of the following:
+* Using LevelDB to store the blockchain state database. Run the following command to start the network:
+```bash
+docker-compose -p "fitcoin" -f "docker-compose.yaml" up -d 
+```
+
+## 3. Check the logs
 
 **Command**
 ```bash
@@ -119,21 +139,14 @@ creating server queue connection seller_queue
  [x] Awaiting RPC requests
 ```
 
-**Scale the fictoin-backend**
+## 4.  Use REST APIs to interact with the network
 
-To scale the fitcoin-backend use the following command:
-```bash
-docker-compose -p "fitcoin" up -d --scale fitcoin-backend=<No of conatiners>
-```
-
-**To run the load test application**
-
-Check the instructions from [start.md](https://github.com/IBM/secret-map-dashboard/blob/master/containers/blockchain/cliLoadTester/start.md)
 
 **To view the Blockchain Events**
 
 In a separate terminal navigate to testApplication folder and run the following command:
 ```
+cd testApplication
 npm install
 node index.js
 ```
@@ -141,6 +154,14 @@ Navigate to url to view the blockchain blocks: **http://localhost:8000/history.h
 Now navigate to url to perform operations on network : **http://localhost:8000/test.html**
 
 **Sample  values for request**
+
+**Enroll Operation**
+```
+type = enroll
+userId = <userID> i.e. user1
+fcn = enroll
+args = <userID> i.e. user1
+```
 
 **Invoke Operation**
 ```
@@ -157,3 +178,12 @@ userId = <userID> i.e. user1
 fcn = getState
 args = <userID> i.e. user1
 ```
+
+
+
+## Additional Resources
+* [Hyperledger Fabric Docs](http://hyperledger-fabric.readthedocs.io/en/latest/)
+* [Hyperledger Composer Docs](https://hyperledger.github.io/composer/introduction/introduction.html)
+
+## License
+[Apache 2.0](LICENSE)
