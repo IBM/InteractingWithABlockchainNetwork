@@ -37,7 +37,7 @@ This step will do the following:
 
 * Start the blockchain network
 
-**Note: this command will run a long time; perhaps 3-4 mins
+**Note: the `build.sh` command will run a long time; perhaps 3-4 mins
 
 ```bash
 export FABRIC_CFG_PATH=$(pwd)
@@ -54,6 +54,8 @@ chmod +x clean.sh
 
 
 ## 2. Check the logs
+
+This step will check the log results from runnng the `./build.sh` command.
 
 **Command**
 ```bash
@@ -153,11 +155,12 @@ fcn = <leave blank>
 args = <leave blank>
 ```
 
-From this you will see a return message for a User ID:  (Below: `e0165a07-9358-470e-b29d-9412b7967000` is the id that is dynamically created)
+From this you will see a return message for a User ID:  (`e0165a07-9358-470e-b29d-9412b7967000` is the id that is dynamically created)
 
 ```
 {"message":"success","result":{"user":"e0165a07-9358-470e-b29d-9412b7967000","txId":"dfc8b4849a2fe4352ff1213c7445fbe2ecdb649f444580c6d010a1fca3fb990d"}}
 ```
+
 
 **Invoke Operation** (This will create a user with 500 fitcoins)
 ```
@@ -165,6 +168,12 @@ type = invoke
 userId = e0165a07-9358-470e-b29d-9412b7967000
 fcn = createMember
 args = <userID>,<Number as String> i.e. e0165a07-9358-470e-b29d-9412b7967000,500 
+```
+
+From this you will see a return message: (500 fitcoins were created)
+
+```
+{"message":"success","result":{"txId":"82700302bd916df4aecc9685150d0e5e9ba8a385407fbd1d80b7f03c5c474255","results":{"status":200,"message":"","payload":"{\"id\":\"e0165a07-9358-470e-b29d-9412b7967000\",\"memberType\":\"user\",\"fitcoinsBalance\":5,\"totalSteps\":500,\"stepsUsedForConversion\":500,\"contractIds\":null,\"generatedFitcoins\":5}"}}}
 ```
 
 **Invoke Operation** (Alternative way to generate 500 fitcoins)
@@ -175,6 +184,7 @@ fcn = generateFitcoins
 args = <userID>,<Number as String> i.e. e0165a07-9358-470e-b29d-9412b7967000,500
 ```
 
+
 **Query Operation**
 ```
 type = query
@@ -183,6 +193,10 @@ fcn = getState
 args = <userID> i.e. e0165a07-9358-470e-b29d-9412b7967000
 ```
 
+From this you will see a return message: (It shows that this userid has 500 fitcoins)
+```
+{"message":"success","result":"{\"contractIds\":null,\"fitcoinsBalance\":5,\"id\":\"e0165a07-9358-470e-b29d-9412b7967000\",\"memberType\":\"user\",\"stepsUsedForConversion\":500,\"totalSteps\":500}"}
+```
 
 
 ## Additional Resources
