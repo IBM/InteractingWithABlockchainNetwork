@@ -1,4 +1,4 @@
-# Using Rest APIs to Interact with a Blockchain Network
+# Interacting with a Blockchain Network
 
 ## Instructions for setting the blockchainNetwork
 
