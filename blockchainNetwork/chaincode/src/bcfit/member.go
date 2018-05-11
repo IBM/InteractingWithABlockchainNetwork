@@ -101,7 +101,7 @@ func (t *SimpleChaincode) createMember(stub shim.ChaincodeStubInterface, args []
 }
 
 // ============================================================================================================================
-// Generate Fitcoins for the user
+// Generate fitcoins for the user using user steps
 // Inputs - userId, transactionSteps
 // ============================================================================================================================
 func (t *SimpleChaincode) generateFitcoins(stub shim.ChaincodeStubInterface, args []string) pb.Response {
@@ -147,6 +147,69 @@ func (t *SimpleChaincode) generateFitcoins(stub shim.ChaincodeStubInterface, arg
 	}
 
 	//return updated user with GeneratedFitcoins and GeneratedSteps
+	type ReturnUser struct {
+		User
+		GeneratedFitcoins			 int      `json:"generatedFitcoins"`
+	}
+	var returnUser ReturnUser
+
+	returnUser.Id = user.Id
+	returnUser.Type = user.Type
+	returnUser.FitcoinsBalance = user.FitcoinsBalance
+	returnUser.TotalSteps = user.TotalSteps
+	returnUser.StepsUsedForConversion = user.StepsUsedForConversion
+	returnUser.ContractIds = user.ContractIds
+	returnUser.GeneratedFitcoins = newFitcoins
+
+	returnUserBytes, _ := json.Marshal(returnUser)
+	return shim.Success(returnUserBytes)
+
+}
+
+
+// ============================================================================================================================
+// Award fitcoins to user
+// Inputs - userId, newFitcoins
+// ============================================================================================================================
+func (t *SimpleChaincode) awardFitcoins(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments")
+	}
+	var err error
+
+	//get user_id and fitcoins from args
+	user_id := args[0]
+	newFitcoins, err := strconv.Atoi(args[1])
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	//check newFitcoins arg
+	if (newFitcoins < 0) {
+		return shim.Error("Must be positive")
+	}
+
+	//get user
+	var user User
+	userAsBytes, err := stub.GetState(user_id)
+	if err != nil {
+		return shim.Error("Failed to get user")
+	}
+	json.Unmarshal(userAsBytes, &user)
+	if user.Type != TYPE_USER {
+		return shim.Error("Not user type")
+	}
+
+	user.FitcoinsBalance = user.FitcoinsBalance + newFitcoins
+
+	//update users state
+	updatedUserAsBytes, _ := json.Marshal(user)
+	err = stub.PutState(user_id, updatedUserAsBytes)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	//return updated user with GeneratedFitcoins
 	type ReturnUser struct {
 		User
 		GeneratedFitcoins			 int      `json:"generatedFitcoins"`

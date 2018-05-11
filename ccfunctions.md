@@ -65,6 +65,20 @@ input = {
 - userID - the user ID returned from enroll
 - totalSteps - the total steps walked by user
 
+#### Award fitcoins
+```
+input = {
+  type: invoke,
+  params: {
+    userId: userId
+    fcn: awardFitcoins
+    args: userId, newFitcoins
+  }
+}
+```
+- userID - the user ID
+- newFitcoins - the number of fitcoins to add to user's account
+
 #### Make purchase
 ```
 input = {

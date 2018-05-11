@@ -123,6 +123,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		return t.createMember(stub, args)
 	} else if function == "generateFitcoins" {
 		return t.generateFitcoins(stub, args)
+	} else if function == "awardFitcoins" {
+		return t.awardFitcoins(stub, args)
 	} else if function == "getState" {
 		return t.getState(stub, args)
 	} else if function == "createProduct" {

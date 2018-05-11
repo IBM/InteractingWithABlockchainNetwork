@@ -1,44 +1,6 @@
-# Using Rest APIs to Interact with a Blockchain Network
-
 ## Instructions for setting the blockchainNetwork
 
-Welcome to Part 2 of building a Blockchain Application.  Now that you have created a blockchain network, you can learn how to interact with it to add participants, perform transactions and query the network.
-
-## Included Components
-* Hyperledger Fabric
-* Docker
-* Hyperledger Fabric SDK for node.js
-
-
-## Application Workflow Diagram
-![Application Workflow](images/Pattern1-Build-a-network.png)
-
-## Prerequisites
-* [Docker](https://www.docker.com/products/overview) - v1.13 or higher
-* [Docker Compose](https://docs.docker.com/compose/overview/) - v1.8 or higher
-
-## Steps
-1. [Run Build.sh Script to build network](#1-run-the-build.sh-script)
-2. [Check the logs](#2-check-the-logs)
-3. [Test commands on the network](#3-Test-commands-on-the-network)
-
-
-## 1. Run the Build.sh Script
-
 ### Open a new terminal and run the following command:
-
-This step will do the following:
-
-* Remove docker images and containers
-
-* Remove old certificates
-
-* Create and instantiate certificates on the peers in the network
-
-* Start the blockchain network
-
-**Note: this command will run a long time; perhaps 3-4 mins
-
 ```bash
 export FABRIC_CFG_PATH=$(pwd)
 chmod +x cryptogen
@@ -52,8 +14,26 @@ chmod +x clean.sh
 ./build.sh
 ```
 
+### Add compactions for CouchDB instances
 
-## 2. Check the logs
+In browser, open the web UI for all the couchdb instances and add the compaction rule.
+
+For eg:
+* Open  ```http://<IPAddress>:<Port>/_utils```
+* Now select the Configuration tab and click on the `Add Option` button.
+* Provide the following values for the input fields:
+```
+Selection: compactions
+Option: _default
+Value: [{db_fragmentation, "30%"}, {view_fragmentation, "30%"}]
+```
+* Now using terminal, do the following curl request for all the DB's:
+Format :
+```
+curl -H "Content-Type: application/json" -X POST http://<IPAddress>:<Port>/<DBName>/_compact
+```
+
+###  Check the logs
 
 **Command**
 ```bash
@@ -61,8 +41,12 @@ docker logs blockchain-setup
 ```
 **Output:**
 ```bash
-CA registration complete 
-CA registration complete 
+Register CA fitcoin-org
+CA registration complete  FabricCAServices : {hostname: fitcoin-ca, port: 7054}
+Register CA shop-org
+CA registration complete  FabricCAServices : {hostname: shop-ca, port: 7054}
+info: [EventHub.js]: _connect - options {"grpc.ssl_target_name_override":"shop-peer","grpc.default_authority":"shop-peer"}
+info: [EventHub.js]: _connect - options {"grpc.ssl_target_name_override":"fitcoin-peer","grpc.default_authority":"fitcoin-peer"}
 Default channel not found, attempting creation...
 Successfully created a new default channel.
 Joining peers to the default channel.
@@ -72,7 +56,6 @@ info: [packager/Golang.js]: packaging GOLANG from bcfit
 info: [packager/Golang.js]: packaging GOLANG from bcfit
 Successfully installed chaincode on the default channel.
 Successfully instantiated chaincode on all peers.
-Blockchain newtork setup complete.
 ```
 
 **Command**
@@ -107,12 +90,15 @@ docker logs fitcoin_fitcoin-backend_1
 ```
 **Output:**
 ```
-CA registration complete 
-CA registration complete 
-CA registration complete 
-[x] Awaiting RPC requests on clientClient2
-[x] Awaiting RPC requests on clientClient0
-[x] Awaiting RPC requests on clientClient1
+Register CA fitcoin-org
+CA registration complete  FabricCAServices : {hostname: fitcoin-ca, port: 7054}
+Register CA fitcoin-org
+CA registration complete  FabricCAServices : {hostname: fitcoin-ca, port: 7054}
+info: [EventHub.js]: _connect - options {"grpc.ssl_target_name_override":"fitcoin-peer","grpc.default_authority":"fitcoin-peer","grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1}
+info: [EventHub.js]: _connect - options {"grpc.ssl_target_name_override":"fitcoin-peer","grpc.default_authority":"fitcoin-peer","grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1}
+connected to the server
+creating server queue connection user_queue
+ [x] Awaiting RPC requests
 ```
 
 **Command**
@@ -121,20 +107,33 @@ docker logs fitcoin_shop-backend_1
 ```
 **Output:**
 ```
-CA registration complete 
-CA registration complete 
+Register CA shop-org
+CA registration complete  FabricCAServices : {hostname: shop-ca, port: 7054}
+Register CA shop-org
+CA registration complete  FabricCAServices : {hostname: shop-ca, port: 7054}
+info: [EventHub.js]: _connect - options {"grpc.ssl_target_name_override":"shop-peer","grpc.default_authority":"shop-peer","grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1}
+info: [EventHub.js]: _connect - options {"grpc.ssl_target_name_override":"shop-peer","grpc.default_authority":"shop-peer","grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1}
 Starting socker server
-[x] Awaiting RPC requests on clientClient0
+connected to the server
+creating server queue connection seller_queue
+ [x] Awaiting RPC requests
 ```
 
-## 3.  Test commands on the network
+**Scale the fictoin-backend**
 
+To scale the fitcoin-backend use the following command:
+```bash
+docker-compose -p "fitcoin" up -d --scale fitcoin-backend=<No of conatiners>
+```
+
+**To run the load test application**
+
+Check the instructions from [start.md](https://github.com/IBM/secret-map-dashboard/blob/master/containers/blockchain/cliLoadTester/start.md)
 
 **To view the Blockchain Events**
 
 In a separate terminal navigate to testApplication folder and run the following command:
 ```
-cd testApplication
 npm install
 node index.js
 ```
@@ -143,51 +142,18 @@ Now navigate to url to perform operations on network : **http://localhost:8000/t
 
 **Sample  values for request**
 
-
-
-**Enroll Operation**
-```
-type = enroll
-userId = <leave blank>
-fcn = <leave blank>
-args = <leave blank>
-```
-
-From this you will see a return message for a User ID:  (Below: `e0165a07-9358-470e-b29d-9412b7967000` is the id that is dynamically created)
-
-```
-{"message":"success","result":{"user":"e0165a07-9358-470e-b29d-9412b7967000","txId":"dfc8b4849a2fe4352ff1213c7445fbe2ecdb649f444580c6d010a1fca3fb990d"}}
-```
-
-**Invoke Operation** (This will create a user with 500 fitcoins)
+**Invoke Operation**
 ```
 type = invoke
-userId = e0165a07-9358-470e-b29d-9412b7967000
-fcn = createMember
-args = <userID>,<Number as String> i.e. e0165a07-9358-470e-b29d-9412b7967000,500 
-```
-
-**Invoke Operation** (Alternative way to generate 500 fitcoins)
-```
-type = invoke
-userId = e0165a07-9358-470e-b29d-9412b7967000
+userId = <userID> i.e. user1
 fcn = generateFitcoins
-args = <userID>,<Number as String> i.e. e0165a07-9358-470e-b29d-9412b7967000,500
+args = <userID>,<Number as String> i.e. user1,"500"
 ```
 
 **Query Operation**
 ```
 type = query
-userId = <userID> i.e. e0165a07-9358-470e-b29d-9412b7967000
+userId = <userID> i.e. user1
 fcn = getState
-args = <userID> i.e. e0165a07-9358-470e-b29d-9412b7967000
+args = <userID> i.e. user1
 ```
-
-
-
-## Additional Resources
-* [Hyperledger Fabric Docs](http://hyperledger-fabric.readthedocs.io/en/latest/)
-* [Hyperledger Composer Docs](https://hyperledger.github.io/composer/introduction/introduction.html)
-
-## License
-[Apache 2.0](LICENSE)
