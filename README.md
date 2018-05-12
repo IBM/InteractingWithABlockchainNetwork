@@ -11,7 +11,12 @@ Welcome to Part 2 of building a Blockchain Application.  Now that you have creat
 
 
 ## Application Workflow Diagram
-![Workflow](https://github.com/IBM/InteractingWithABlochchainNetwork/blob/master/images/Interacting_arch.png)
+<!--Remember to dump an image in this path-->
+<p align="center">
+<!-- <img src="https://i.imgur.com/lNZxVxo.png"  data-canonical-src="https://i.imgur.com/lNZxVxo.png" width="650" height="450" style="margin-left: auto; margin-right: auto;"> -->
+<img src="./images/Interacting_arch.jpeg"/>
+</p>
+
 
 1. Run a build script that launches the network in 3 steps.
 2. Ensure that all old Docker images are removed so you build the network from a clean system.
