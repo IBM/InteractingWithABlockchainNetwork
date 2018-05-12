@@ -14,7 +14,7 @@ Welcome to Part 2 of building a Blockchain Application.  Now that you have creat
 <!--Remember to dump an image in this path-->
 <p align="center">
 <!-- <img src="https://i.imgur.com/lNZxVxo.png"  data-canonical-src="https://i.imgur.com/lNZxVxo.png" width="650" height="450" style="margin-left: auto; margin-right: auto;"> -->
-<img src="./images/Interacting_arch.jpeg"/>
+<img src="./images/Interacting_arch2.jpeg"/>
 </p>
 
 
