@@ -11,7 +11,16 @@ Welcome to Part 2 of building a Blockchain Application.  Now that you have creat
 
 
 ## Application Workflow Diagram
-![Application Workflow](images/Pattern1-Build-a-network.png)
+![Workflow](https://github.com/IBM/InteractingWithABlochchainNetwork/blob/master/images/Interacting_arch.png)
+
+1. Run a build script that launches the network in 3 steps.
+2. Ensure that all old Docker images are removed so you build the network from a clean system.
+3. Generate the cryptographic material. The Crypto configuration file (crypto-config.yaml) defines the identity of who is who. It tells peers and orderers what organization and domain they belong to. It then initializes a blockchain network or channel and services with an Orderer Genesis Block, which serves as the first chain block. Membership services are installed on each channel peer.
+4. Install the chaincode on the peers, and build the Docker images of the orderer, peers, channel, network.
+5. Launch the network.
+6. View transction logs
+7. Perform transactions using application
+8. view results of transactions in web application
 
 ## Prerequisites
 * [Docker](https://www.docker.com/products/overview) - v1.13 or higher
