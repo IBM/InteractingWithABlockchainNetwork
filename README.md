@@ -1,5 +1,13 @@
 # Interacting with a Blockchain Network
 
+# WARNING: This repository is no longer maintained :warning:
+
+> This repository, which contains assets to run a Hyperledger Composer application,
+is not being actively maintained due to a shift to focus on Hyperledger Fabric.
+This repository will not be updated. The repository will be kept available 
+in read-only mode. Refer to https://github.com/IBM/SmartContractTrading-wFabric1-4-VSCodeExt 
+for a similar example.
+
 ## Instructions for setting the blockchainNetwork
 
 Welcome to Part 2 of building a Blockchain Application.  Now that you have created a blockchain network, you can learn how to interact with it to add participants, perform transactions and query the network.
